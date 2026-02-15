@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "./icons";
 import { useSidebar } from "./ui/sidebar";
 import { LanguageSwitcher } from "./language-switcher";
+import { useState, useEffect } from "react";
 
 function PureChatHeader({
   chatId,
@@ -26,7 +27,13 @@ function PureChatHeader({
   const isRTL = locale === "fa";
 
   const { width: windowWidth } = useWindowSize();
-
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true); // حالا می‌دانیم در کلاینت هستیم
+  }, []);
+  if (!isClient) {
+    return <div className="placeholder">در حال بارگذاری...</div>;
+  }
   return (
     <header className="sticky top-0 flex items-center gap-2 bg-background px-2 py-1.5 md:px-2">
       <SidebarToggle />
