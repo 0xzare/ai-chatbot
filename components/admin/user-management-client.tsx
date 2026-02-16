@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
@@ -47,7 +46,7 @@ export function UserManagementClient({ mainUsers: initialMainUsers, guestUsers: 
 
       // Check if the response is JSON or HTML
       const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
+      if (contentType?.includes('application/json')) {
         const result = await response.json();
         if (response.ok && result.success) {
           // Update the local state - check if it's a main or guest user
@@ -73,7 +72,7 @@ export function UserManagementClient({ mainUsers: initialMainUsers, guestUsers: 
     } catch (error: any) {
       console.error('Error updating user role:', error);
       // Check if it's a specific error about parsing JSON
-      if (error.message && error.message.includes('Unexpected token')) {
+      if (error.message?.includes('Unexpected token')) {
         toast.error(`${t('roleUpdateError')}: Server returned an unexpected response`);
       } else {
         toast.error(`${t('roleUpdateError')}: ${error.message || 'Unknown error'}`);
