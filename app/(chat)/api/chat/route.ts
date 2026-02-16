@@ -131,6 +131,9 @@ export async function POST(request: Request) {
             parts: message.parts,
             attachments: [],
             createdAt: new Date(),
+            zone: null,
+            latitude: null,
+            longitude: null
           },
         ],
       });
@@ -211,6 +214,9 @@ export async function POST(request: Request) {
                     createdAt: new Date(),
                     attachments: [],
                     chatId: id,
+                    zone: null,
+                    latitude: null,
+                    longitude: null
                   },
                 ],
               });
