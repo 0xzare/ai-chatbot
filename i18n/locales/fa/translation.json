@@ -41,6 +41,7 @@
     "inputPlaceholder": "پیامی ارسال کنید...",
     "searchModels": "جستجوی مدل‌ها...",
     "deployWithVercel": "دیپلوی با Vercel",
+    "dashboard": "پنل مدیریت",
     "sidebar": {
       "title": "چت‌بات",
       "deleteAll": "حذف همه گفتگوها",

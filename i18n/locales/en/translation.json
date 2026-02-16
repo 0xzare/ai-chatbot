@@ -41,6 +41,7 @@
     "inputPlaceholder": "Send a message...",
     "searchModels": "Search models...",
     "deployWithVercel": "Deploy with Vercel",
+    "dashboard": "Dashboard",
     "sidebar": {
       "title": "Chatbot",
       "deleteAll": "Delete All Chats",

@@ -68,7 +68,8 @@ function DashboardButton({ isRTL }: { isRTL: boolean }) {
   const { data: session } = useSession();
   const router = useRouter();
   const locale = useLocale();
-  
+  const t = useTranslations("chat");
+
   if (!isAdminUserRole(session?.user?.role)) {
     return null;
   }
@@ -79,7 +80,7 @@ function DashboardButton({ isRTL }: { isRTL: boolean }) {
       size="sm"
       onClick={() => router.push(`/${locale}/dashboard`)}
     >
-      <span>Dashboard</span>
+      <span>{t("dashboard")}</span>
     </Button>
   );
 }
