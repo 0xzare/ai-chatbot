@@ -19,6 +19,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { guestRegex } from "@/lib/constants";
+import { isAdminUserRole } from "@/lib/admin";
 import { LoaderIcon } from "./icons";
 import { toast } from "./toast";
 
@@ -79,6 +80,27 @@ export function SidebarUserNav({ user }: { user: User }) {
             >
               {`Toggle ${resolvedTheme === "light" ? "dark" : "light"} mode`}
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {isAdminUserRole(data?.user?.role) && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <button
+                    className="w-full cursor-pointer"
+                    onClick={() => {
+                      // Get the current locale from the URL
+                      const currentPath = window.location.pathname;
+                      const localeMatch = currentPath.match(/^\/([a-z]{2})\//);
+                      const locale = localeMatch ? localeMatch[1] : 'en';
+                      router.push(`/${locale}/dashboard`);
+                    }}
+                    type="button"
+                  >
+                    Admin Dashboard
+                  </button>
+                </DropdownMenuItem>
+              </>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild data-testid="user-nav-item-auth">
               <button

@@ -67,9 +67,10 @@ export async function createGuestUser() {
   const password = generateHashedPassword(generateUUID());
 
   try {
-    return await db.insert(user).values({ email, password }).returning({
+    return await db.insert(user).values({ email, password, role: "user" }).returning({
       id: user.id,
       email: user.email,
+      role: user.role,
     });
   } catch (_error) {
     throw new ChatSDKError(
@@ -560,6 +561,41 @@ export async function getMessageCountByUserId({
     throw new ChatSDKError(
       "bad_request:database",
       "Failed to get message count by user id"
+    );
+  }
+}
+
+export async function getUsers(): Promise<User[]> {
+  try {
+    return await db.select().from(user);
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get users"
+    );
+  }
+}
+
+export async function getChatsCount(): Promise<number> {
+  try {
+    const result = await db.select({ count: count(chat.id) }).from(chat);
+    return result[0]?.count ?? 0;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get chats count"
+    );
+  }
+}
+
+export async function getMessagesCount(): Promise<number> {
+  try {
+    const result = await db.select({ count: count(message.id) }).from(message);
+    return result[0]?.count ?? 0;
+  } catch (_error) {
+    throw new ChatSDKError(
+      "bad_request:database",
+      "Failed to get messages count"
     );
   }
 }

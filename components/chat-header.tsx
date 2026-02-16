@@ -10,6 +10,8 @@ import { PlusIcon } from "./icons";
 import { useSidebar } from "./ui/sidebar";
 import { LanguageSwitcher } from "./language-switcher";
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { isAdminUserRole } from "@/lib/admin";
 
 function PureChatHeader({
   chatId,
@@ -52,10 +54,33 @@ function PureChatHeader({
         </Button>
       )}
 
-      <div className={isRTL ? "mr-auto" : "ml-auto"}>
+      <div className={isRTL ? "mr-auto flex items-center gap-2" : "ml-auto flex items-center gap-2"}>
         <LanguageSwitcher />
+        {isClient && (
+          <DashboardButton isRTL={isRTL} />
+        )}
       </div>
     </header>
+  );
+}
+
+function DashboardButton({ isRTL }: { isRTL: boolean }) {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const locale = useLocale();
+  
+  if (!isAdminUserRole(session?.user?.role)) {
+    return null;
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => router.push(`/${locale}/dashboard`)}
+    >
+      <span>Dashboard</span>
+    </Button>
   );
 }
 
