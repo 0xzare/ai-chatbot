@@ -52,10 +52,10 @@
       "help": "How can I help you today?"
     },
     "suggestions": {
-      "nextjs": "What are the advantages of using Next.js?",
-      "dijkstra": "Write code to demonstrate Dijkstra's algorithm",
-      "essay": "Help me write an essay about Silicon Valley",
-      "weather": "What is the weather in San Francisco?"
+      "nextjs": "What is the status of the building permit I requested?",
+      "dijkstra": "How can I submit a request to fix the pothole in our alley?",
+      "essay": "Where can I pay my water and electricity bills?",
+      "weather": "What is the weather like in Qom?"
     }
   },
   "visibility": {
