@@ -68,9 +68,9 @@ export function AppSidebar({ user }: { user: User | undefined }) {
       <Sidebar side={isRTL ? "right" : "left"} className={isRTL ? "group-data-[side=right]:border-l-0" : "group-data-[side=left]:border-r-0"}>
         <SidebarHeader>
           <SidebarMenu>
-            <div className="flex flex-row items-center justify-between">
+            <div className={`flex flex-row items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}>
               <Link
-                className="flex flex-row items-center gap-3"
+                className={`flex flex-row items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
                 href="/"
                 onClick={() => {
                   setOpenMobile(false);
@@ -80,7 +80,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                   {t('title')}
                 </span>
               </Link>
-              <div className="flex flex-row gap-1">
+              <div className={`flex flex-row gap-1 ${isRTL ? "flex-row-reverse" : ""}`}>
                 {user && (
                   <Tooltip>
                     <TooltipTrigger asChild>

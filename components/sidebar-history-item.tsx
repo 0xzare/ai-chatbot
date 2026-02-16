@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { memo } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useChatVisibility } from "@/hooks/use-chat-visibility";
 import type { Chat } from "@/lib/db/schema";
 import {
@@ -43,27 +43,30 @@ const PureChatItem = ({
     initialVisibilityType: chat.visibility,
   });
   const t = useTranslations('sidebarHistory.item');
+  const locale = useLocale();
+  const isRTL = locale === 'fa';
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild isActive={isActive}>
-        <Link href={`/chat/${chat.id}`} onClick={() => setOpenMobile(false)}>
-          <span>{chat.title}</span>
-        </Link>
-      </SidebarMenuButton>
+      <div className={`flex ${isRTL ? "flex-row-reverse" : ""} w-full items-center`}>
+        <SidebarMenuButton asChild isActive={isActive}>
+          <Link href={`/chat/${chat.id}`} onClick={() => setOpenMobile(false)}>
+            <span>{chat.title}</span>
+          </Link>
+        </SidebarMenuButton>
 
-      <DropdownMenu modal={true}>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuAction
-            className="mr-0.5 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            showOnHover={!isActive}
-          >
-            <MoreHorizontalIcon />
-            <span className="sr-only">{t('more')}</span>
-          </SidebarMenuAction>
-        </DropdownMenuTrigger>
+        <DropdownMenu modal={true}>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuAction
+              className={`${isRTL ? "ml-0.5" : "mr-0.5"} data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground`}
+              showOnHover={!isActive}
+            >
+              <MoreHorizontalIcon />
+              <span className="sr-only">{t('more')}</span>
+            </SidebarMenuAction>
+          </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" side="bottom">
+        <DropdownMenuContent align={isRTL ? "start" : "end"} side="bottom">
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="cursor-pointer">
               <ShareIcon />
@@ -110,6 +113,7 @@ const PureChatItem = ({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      </div>
     </SidebarMenuItem>
   );
 };

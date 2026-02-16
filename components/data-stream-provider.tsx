@@ -32,10 +32,23 @@ export function DataStreamProvider({
   );
 }
 
+const defaultDataStream: DataUIPart<CustomUIDataTypes>[] = [];
+
+const defaultSetDataStream = (
+  _value: React.SetStateAction<DataUIPart<CustomUIDataTypes>[]>
+) => {
+  // no-op for SSR
+};
+
+const defaultValue: DataStreamContextValue = {
+  dataStream: defaultDataStream,
+  setDataStream: defaultSetDataStream,
+};
+
 export function useDataStream() {
   const context = useContext(DataStreamContext);
   if (!context) {
-    throw new Error("useDataStream must be used within a DataStreamProvider");
+    return defaultValue;
   }
   return context;
 }

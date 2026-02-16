@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { User } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
+import { useLocale } from "next-intl";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,6 +28,8 @@ export function SidebarUserNav({ user }: { user: User }) {
   const router = useRouter();
   const { data, status } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
+  const locale = useLocale();
+  const isRTL = locale === 'fa';
 
   const isGuest = guestRegex.test(data?.user?.email ?? "");
 
@@ -49,7 +52,7 @@ export function SidebarUserNav({ user }: { user: User }) {
               </SidebarMenuButton>
             ) : (
               <SidebarMenuButton
-                className="h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                className={`h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ${isRTL ? "flex-row-reverse" : ""}`}
                 data-testid="user-nav-button"
               >
                 <Image
@@ -62,7 +65,7 @@ export function SidebarUserNav({ user }: { user: User }) {
                 <span className="truncate" data-testid="user-email">
                   {isGuest ? "Guest" : user?.email}
                 </span>
-                <ChevronUp className="ml-auto" />
+                <ChevronUp className={isRTL ? "mr-auto" : "ml-auto"} />
               </SidebarMenuButton>
             )}
           </DropdownMenuTrigger>
@@ -70,6 +73,7 @@ export function SidebarUserNav({ user }: { user: User }) {
             className="w-(--radix-popper-anchor-width)"
             data-testid="user-nav-menu"
             side="top"
+            align={isRTL ? "end" : "start"}
           >
             <DropdownMenuItem
               className="cursor-pointer"

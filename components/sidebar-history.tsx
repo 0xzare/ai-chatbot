@@ -7,7 +7,7 @@ import type { User } from "next-auth";
 import { useState } from "react";
 import { toast } from "sonner";
 import useSWRInfinite from "swr/infinite";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -103,6 +103,8 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   const pathname = usePathname();
   const id = pathname?.startsWith("/chat/") ? pathname.split("/")[2] : null;
   const t = useTranslations('sidebarHistory');
+  const locale = useLocale();
+  const isRTL = locale === 'fa';
 
   const {
     data: paginatedChatHistories,
@@ -228,7 +230,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                 const groupedChats = groupChatsByDate(chatsFromHistory);
 
                 return (
-                  <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-6" style={{ direction: isRTL ? "rtl" : "ltr" }}>
                     {groupedChats.today.length > 0 && (
                       <div>
                         <div className="px-2 py-1 text-sidebar-foreground/50 text-xs">
