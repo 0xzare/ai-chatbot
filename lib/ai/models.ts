@@ -1,5 +1,5 @@
 // Curated list of top models from Vercel AI Gateway
-export const DEFAULT_CHAT_MODEL = "google/gemini-2.5-flash-lite";
+export const DEFAULT_CHAT_MODEL = "arcee-ai/trinity-large-preview:free";
 
 export type ChatModel = {
   id: string;
@@ -9,6 +9,13 @@ export type ChatModel = {
 };
 
 export const chatModels: ChatModel[] = [
+  // Arcee AI
+  {
+    id: "arcee-ai/trinity-large-preview:free",
+    name: "Trinity Large Preview (Free)",
+    provider: "arcee-ai",
+    description: "Free high-performance model from Arcee AI",
+  },
   // Anthropic
   {
     id: "anthropic/claude-haiku-4.5",
