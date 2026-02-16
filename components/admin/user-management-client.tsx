@@ -45,24 +45,39 @@ export function UserManagementClient({ mainUsers: initialMainUsers, guestUsers: 
         }),
       });
 
-      if (response.ok) {
-        // Update the local state - check if it's a main or guest user
-        if (mainUsers.some(user => user.id === userId)) {
-          setMainUsers(mainUsers.map(user =>
-            user.id === userId ? { ...user, role: newRole } : user
-          ));
-        } else if (guestUsers.some(user => user.id === userId)) {
-          setGuestUsers(guestUsers.map(user =>
-            user.id === userId ? { ...user, role: newRole } : user
-          ));
+      // Check if the response is JSON or HTML
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const result = await response.json();
+        if (response.ok && result.success) {
+          // Update the local state - check if it's a main or guest user
+          if (mainUsers.some(user => user.id === userId)) {
+            setMainUsers(mainUsers.map(user =>
+              user.id === userId ? { ...user, role: newRole } : user
+            ));
+          } else if (guestUsers.some(user => user.id === userId)) {
+            setGuestUsers(guestUsers.map(user =>
+              user.id === userId ? { ...user, role: newRole } : user
+            ));
+          }
+          toast.success(`${t('roleUpdatedTo')} ${newRole} ${t('forUser')} ${(mainUsers.concat(guestUsers)).find(u => u.id === userId)?.email}`);
+        } else {
+          throw new Error(result.error || 'Failed to update user role');
         }
-        toast.success(`${t('roleUpdatedTo')} ${newRole} ${t('forUser')} ${(mainUsers.concat(guestUsers)).find(u => u.id === userId)?.email}`);
       } else {
-        throw new Error('Failed to update user role');
+        // If it's not JSON, it might be an HTML error page
+        const textResponse = await response.text();
+        console.error('Non-JSON response:', textResponse);
+        throw new Error(`Server responded with non-JSON content: Status ${response.status}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating user role:', error);
-      toast.error(t('roleUpdateError'));
+      // Check if it's a specific error about parsing JSON
+      if (error.message && error.message.includes('Unexpected token')) {
+        toast.error(`${t('roleUpdateError')}: Server returned an unexpected response`);
+      } else {
+        toast.error(`${t('roleUpdateError')}: ${error.message || 'Unknown error'}`);
+      }
     }
   };
 

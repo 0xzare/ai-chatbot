@@ -13,7 +13,7 @@ const db = drizzle(client);
 export async function POST(req: NextRequest) {
   // Check if user is authenticated and is an admin
   const session = await auth();
-  
+
   if (!session || !isAdminUserRole(session.user.role)) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
