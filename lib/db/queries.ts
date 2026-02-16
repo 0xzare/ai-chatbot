@@ -10,6 +10,7 @@ import {
   gte,
   inArray,
   lt,
+  sql,
   type SQL,
 } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -565,8 +566,21 @@ export async function getMessageCountByUserId({
   }
 }
 
-export async function getUsers(): Promise<User[]> {
+export async function getUsers(isGuest?: boolean): Promise<User[]> {
   try {
+    if (isGuest !== undefined) {
+      if (isGuest) {
+        // Filter for guest users (emails starting with 'guest-')
+        return await db.select().from(user).where(
+          sql`email LIKE 'guest-%'`
+        );
+      } else {
+        // Filter for non-guest users (emails not starting with 'guest-')
+        return await db.select().from(user).where(
+          sql`email NOT LIKE 'guest-%'`
+        );
+      }
+    }
     return await db.select().from(user);
   } catch (_error) {
     throw new ChatSDKError(

@@ -304,6 +304,13 @@
     "roleUpdatedSuccess": "نقش به {role} برای {email} به‌روزرسانی شد",
     "roleUpdateError": "به‌روزرسانی نقش کاربر ناموفق بود",
     "roleUpdatedTo": "نقش به",
-    "forUser": "برای"
+    "forUser": "برای",
+    "mainUsers": "کاربران اصلی",
+    "guestUsers": "کاربران مهمان",
+    "searchMainUsers": "جستجوی کاربران اصلی...",
+    "searchGuestUsers": "جستجوی کاربران مهمان...",
+    "noMainUsersFound": "هیچ کاربر اصلی یافت نشد",
+    "noGuestUsersFound": "هیچ کاربر مهمان یافت نشد",
+    "goToChat": "رفتن به چت"
   }
 }

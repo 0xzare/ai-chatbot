@@ -304,6 +304,13 @@
     "roleUpdatedSuccess": "Role updated to {role} for {email}",
     "roleUpdateError": "Failed to update user role",
     "roleUpdatedTo": "Role updated to",
-    "forUser": "for"
+    "forUser": "for",
+    "mainUsers": "Main Users",
+    "guestUsers": "Guest Users",
+    "searchMainUsers": "Search main users...",
+    "searchGuestUsers": "Search guest users...",
+    "noMainUsersFound": "No main users found",
+    "noGuestUsersFound": "No guest users found",
+    "goToChat": "Go to Chat"
   }
 }

@@ -6,8 +6,8 @@ interface User {
   role: string;
 }
 
-export function UserManagement({ users }: { users: User[] }) {
+export function UserManagement({ mainUsers, guestUsers }: { mainUsers: User[], guestUsers: User[] }) {
   return (
-    <UserManagementClient users={users} />
+    <UserManagementClient mainUsers={mainUsers} guestUsers={guestUsers} />
   );
 }

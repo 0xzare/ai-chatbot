@@ -14,14 +14,21 @@ interface User {
   role: string;
 }
 
-export function UserManagementClient({ users: initialUsers }: { users: User[] }) {
+export function UserManagementClient({ mainUsers: initialMainUsers, guestUsers: initialGuestUsers }: { mainUsers: User[], guestUsers: User[] }) {
   const t = useTranslations('dashboard');
-  const [users, setUsers] = useState<User[]>(initialUsers);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [mainUsers, setMainUsers] = useState<User[]>(initialMainUsers);
+  const [guestUsers, setGuestUsers] = useState<User[]>(initialGuestUsers);
+  const [mainSearchTerm, setMainSearchTerm] = useState('');
+  const [guestSearchTerm, setGuestSearchTerm] = useState('');
 
-  // Filter users based on search term
-  const filteredUsers = users.filter(user => 
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter main users based on search term
+  const filteredMainUsers = mainUsers.filter(user =>
+    user.email.toLowerCase().includes(mainSearchTerm.toLowerCase())
+  );
+
+  // Filter guest users based on search term
+  const filteredGuestUsers = guestUsers.filter(user =>
+    user.email.toLowerCase().includes(guestSearchTerm.toLowerCase())
   );
 
   const updateUserRole = async (userId: string, newRole: string) => {
@@ -39,11 +46,17 @@ export function UserManagementClient({ users: initialUsers }: { users: User[] })
       });
 
       if (response.ok) {
-        // Update the local state
-        setUsers(users.map(user => 
-          user.id === userId ? { ...user, role: newRole } : user
-        ));
-        toast.success(`${t('roleUpdatedTo')} ${newRole} ${t('forUser')} ${users.find(u => u.id === userId)?.email}`);
+        // Update the local state - check if it's a main or guest user
+        if (mainUsers.some(user => user.id === userId)) {
+          setMainUsers(mainUsers.map(user =>
+            user.id === userId ? { ...user, role: newRole } : user
+          ));
+        } else if (guestUsers.some(user => user.id === userId)) {
+          setGuestUsers(guestUsers.map(user =>
+            user.id === userId ? { ...user, role: newRole } : user
+          ));
+        }
+        toast.success(`${t('roleUpdatedTo')} ${newRole} ${t('forUser')} ${(mainUsers.concat(guestUsers)).find(u => u.id === userId)?.email}`);
       } else {
         throw new Error('Failed to update user role');
       }
@@ -60,37 +73,86 @@ export function UserManagementClient({ users: initialUsers }: { users: User[] })
         <CardDescription>{t('manageUserRoles')}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-4">
-          <Input
-            placeholder={t('searchUsers')}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        {/* Main Users Section */}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-3">{t('mainUsers')}</h3>
+          <div className="mb-3">
+            <Input
+              placeholder={t('searchMainUsers')}
+              value={mainSearchTerm}
+              onChange={(e) => setMainSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="space-y-3">
+            {filteredMainUsers.length > 0 ? (
+              filteredMainUsers.map((user) => (
+                <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg bg-white">
+                  <div>
+                    <p className="font-medium">{user.email}</p>
+                    <p className="text-sm text-muted-foreground">{t('userId', { id: user.id.substring(0, 8) })}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={user.role}
+                      onValueChange={(value) => updateUserRole(user.id, value)}
+                    >
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">{t('userRole')}</SelectItem>
+                        <SelectItem value="admin">{t('adminRole')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground">{t('noMainUsersFound')}</p>
+            )}
+          </div>
         </div>
-        
-        <div className="space-y-4">
-          {filteredUsers.map((user) => (
-            <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <p className="font-medium">{user.email}</p>
-                <p className="text-sm text-muted-foreground">{t('userId', { id: user.id.substring(0, 8) })}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Select 
-                  value={user.role} 
-                  onValueChange={(value) => updateUserRole(user.id, value)}
-                >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="user">{t('userRole')}</SelectItem>
-                    <SelectItem value="admin">{t('adminRole')}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          ))}
+
+        {/* Guest Users Section */}
+        <div>
+          <h3 className="text-lg font-semibold mb-3">{t('guestUsers')}</h3>
+          <div className="mb-3">
+            <Input
+              placeholder={t('searchGuestUsers')}
+              value={guestSearchTerm}
+              onChange={(e) => setGuestSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="space-y-3">
+            {filteredGuestUsers.length > 0 ? (
+              filteredGuestUsers.map((user) => (
+                <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+                  <div>
+                    <p className="font-medium">{user.email}</p>
+                    <p className="text-sm text-muted-foreground">{t('userId', { id: user.id.substring(0, 8) })}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={user.role}
+                      onValueChange={(value) => updateUserRole(user.id, value)}
+                    >
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">{t('userRole')}</SelectItem>
+                        <SelectItem value="admin">{t('adminRole')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground">{t('noGuestUsersFound')}</p>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
