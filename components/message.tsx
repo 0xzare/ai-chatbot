@@ -22,6 +22,7 @@ import { MessageEditor } from "./message-editor";
 import { MessageReasoning } from "./message-reasoning";
 import { PreviewAttachment } from "./preview-attachment";
 import { Weather } from "./weather";
+import { Map } from "./map";
 
 const PurePreviewMessage = ({
   addToolApprovalResponse,
@@ -168,6 +169,38 @@ const PurePreviewMessage = ({
                 );
               }
             }
+
+            if (type === "tool-getMap") {
+              const { toolCallId, state } = part;
+              const widthClass = "w-[min(100%,600px)]";
+
+              if (state === "output-available") {
+                return (
+                    <div key={key} className={widthClass}>
+                      <Map mapData={part.output} />
+                    </div>
+                );
+              }
+
+              if (state === "output-denied") {
+                return (
+                    <div key={key} className={widthClass}>
+                      <div className="text-sm text-red-600 dark:text-red-400">
+                        Map display was denied.
+                      </div>
+                    </div>
+                );
+              }
+
+              return (
+                  <Tool key={key} className={widthClass}>
+                    {state === "input-available" && (
+                        <ToolInput input={JSON.stringify(part.input, null, 2)} />
+                    )}
+                  </Tool>
+              );
+            }
+
 
             if (type === "tool-getWeather") {
               const { toolCallId, state } = part;

@@ -35,6 +35,7 @@ import type { ChatMessage } from "@/lib/types";
 import { convertToUIMessages, generateUUID } from "@/lib/utils";
 import { generateTitleFromUserMessage } from "../../actions";
 import { type PostRequestBody, postRequestBodySchema } from "./schema";
+import {getMap} from "@/lib/ai/tools/get-map";
 
 export const maxDuration = 60;
 
@@ -158,6 +159,7 @@ export async function POST(request: Request) {
             experimental_activeTools: isReasoningModel
               ? []
               : [
+                  "getMap",
                   "getWeather",
                   "createDocument",
                   "updateDocument",
@@ -172,6 +174,7 @@ export async function POST(request: Request) {
               : undefined,
             tools: {
               getWeather,
+              getMap,
               createDocument: createDocument({ session, dataStream }),
               updateDocument: updateDocument({ session, dataStream }),
               requestSuggestions: requestSuggestions({ session, dataStream }),
