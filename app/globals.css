@@ -21,9 +21,9 @@
   font-display: swap;
 }
 
-/* Apply Vazirmatn for RTL elements */
+/* Apply Vazirmatn for all elements */
 * {
-  font-family: "Vazirmatn", var(--font-geist), sans-serif;
+  font-family: var(--font-vazirmatn), "Vazirmatn", sans-serif;
 }
 
 /* custom variant for setting dark mode programmatically */
