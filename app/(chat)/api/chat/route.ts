@@ -36,6 +36,7 @@ import { convertToUIMessages, generateUUID } from "@/lib/utils";
 import { generateTitleFromUserMessage } from "../../actions";
 import { type PostRequestBody, postRequestBodySchema } from "./schema";
 import {getMap} from "@/lib/ai/tools/get-map";
+import { addressToPoint } from "@/lib/ai/tools/neshan-address-to-point";
 
 export const maxDuration = 60;
 
@@ -159,6 +160,7 @@ export async function POST(request: Request) {
             experimental_activeTools: isReasoningModel
               ? []
               : [
+                  "addressToPoint",
                   "getMap",
                   "getWeather",
                   "createDocument",
@@ -175,6 +177,7 @@ export async function POST(request: Request) {
             tools: {
               getWeather,
               getMap,
+              addressToPoint,
               createDocument: createDocument({ session, dataStream }),
               updateDocument: updateDocument({ session, dataStream }),
               requestSuggestions: requestSuggestions({ session, dataStream }),
