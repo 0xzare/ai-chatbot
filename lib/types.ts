@@ -1,6 +1,8 @@
 import type { InferUITool, UIMessage } from "ai";
 import { z } from "zod";
 import type { ArtifactKind } from "@/components/artifact";
+import type { getMap } from "@/lib/ai/tools/get-map";
+import type { addressToPoint } from "@/lib/ai/tools/neshan-address-to-point";
 import type { createDocument } from "./ai/tools/create-document";
 import type { getWeather } from "./ai/tools/get-weather";
 import type { requestSuggestions } from "./ai/tools/request-suggestions";
@@ -16,6 +18,8 @@ export const messageMetadataSchema = z.object({
 export type MessageMetadata = z.infer<typeof messageMetadataSchema>;
 
 type weatherTool = InferUITool<typeof getWeather>;
+type mapTool = InferUITool<typeof getMap>;
+type addressToPointTool = InferUITool<typeof addressToPoint>;
 type createDocumentTool = InferUITool<ReturnType<typeof createDocument>>;
 type updateDocumentTool = InferUITool<ReturnType<typeof updateDocument>>;
 type requestSuggestionsTool = InferUITool<
@@ -24,6 +28,8 @@ type requestSuggestionsTool = InferUITool<
 
 export type ChatTools = {
   getWeather: weatherTool;
+  getMap: mapTool;
+  addressToPoint: addressToPointTool;
   createDocument: createDocumentTool;
   updateDocument: updateDocumentTool;
   requestSuggestions: requestSuggestionsTool;

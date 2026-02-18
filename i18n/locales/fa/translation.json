@@ -41,6 +41,7 @@
     "inputPlaceholder": "پیامی ارسال کنید...",
     "searchModels": "جستجوی مدل‌ها...",
     "deployWithVercel": "دیپلوی با Vercel",
+    "dashboard": "پنل مدیریت",
     "sidebar": {
       "title": "چت‌بات",
       "deleteAll": "حذف همه گفتگوها",
@@ -51,10 +52,10 @@
       "help": "چطور می‌توانم به شما کمک کنم؟"
     },
     "suggestions": {
-      "nextjs": "مزایای استفاده از Next.js چیست؟",
-      "dijkstra": "کد الگوریتم دایکسترا را بنویس",
-      "essay": "در نوشتن مقاله درباره سیلیکون ولی به من کمک کن",
-      "weather": "آب و هوای سانفرانسیسکو چگونه است؟"
+      "nextjs": "وضعیت پروانه ساختمونی که درخواست دادم چطوره؟",
+      "dijkstra": "چطوری درخواست رفع‌چاله کوچه خودمون رو ثبت کنم؟",
+      "essay": "قبض آب و برق خودم رو کجا پرداخت کنم؟",
+      "weather": "آب و هوای قم چگونه است؟"
     }
   },
   "visibility": {
@@ -264,5 +265,53 @@
       "t3": "T3",
       "v0": "v0"
     }
+  },
+  "dashboard": {
+    "title": "پنل مدیریت",
+    "totalUsers": "مجموع کاربران",
+    "totalChats": "مجموع گفتگوها",
+    "totalMessages": "مجموع پیام‌ها",
+    "growthUsers": "+۱۰٪ نسبت به ماه گذشته",
+    "growthChats": "+۱۸٪ نسبت به ماه گذشته",
+    "growthMessages": "+۱۲٪ نسبت به ماه گذشته",
+    "platformStats": "آمار پلتفرم",
+    "users": "کاربران",
+    "chats": "گفتگوها",
+    "messages": "پیام‌ها",
+    "systemInfo": "اطلاعات سیستم",
+    "environment": "محیط",
+    "mode": "حالت",
+    "database": "پایگاه داده",
+    "authentication": "احراز هویت",
+    "applicationInfo": "اطلاعات برنامه",
+    "version": "نسخه",
+    "framework": "چارچوب",
+    "uiLibrary": "کتابخانه رابط کاربری",
+    "recentActivity": "فعالیت‌های اخیر",
+    "newUserRegistered": "کاربر جدید ثبت نام کرد",
+    "newChatCreated": "گفتگوی جدید ایجاد شد",
+    "systemUpdate": "به‌روزرسانی سیستم",
+    "projectDiscussion": "بحث پروژه",
+    "aiModelUpdated": "مدل هوش مصنوعی به‌روزرسانی شد",
+    "twoHoursAgo": "۲ ساعت پیش",
+    "fiveHoursAgo": "۵ ساعت پیش",
+    "oneDayAgo": "۱ روز پیش",
+    "userManagement": "مدیریت کاربران",
+    "manageUserRoles": "مدیریت نقش‌ها و مجوزهای کاربران",
+    "searchUsers": "جستجوی کاربران...",
+    "userId": "شناسه: {id}...",
+    "userRole": "کاربر",
+    "adminRole": "مدیر",
+    "roleUpdatedSuccess": "نقش به {role} برای {email} به‌روزرسانی شد",
+    "roleUpdateError": "به‌روزرسانی نقش کاربر ناموفق بود",
+    "roleUpdatedTo": "نقش به",
+    "forUser": "برای",
+    "mainUsers": "کاربران اصلی",
+    "guestUsers": "کاربران مهمان",
+    "searchMainUsers": "جستجوی کاربران اصلی...",
+    "searchGuestUsers": "جستجوی کاربران مهمان...",
+    "noMainUsersFound": "هیچ کاربر اصلی یافت نشد",
+    "noGuestUsersFound": "هیچ کاربر مهمان یافت نشد",
+    "goToChat": "رفتن به چت"
   }
 }

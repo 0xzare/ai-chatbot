@@ -41,6 +41,7 @@
     "inputPlaceholder": "Send a message...",
     "searchModels": "Search models...",
     "deployWithVercel": "Deploy with Vercel",
+    "dashboard": "Dashboard",
     "sidebar": {
       "title": "Chatbot",
       "deleteAll": "Delete All Chats",
@@ -51,10 +52,10 @@
       "help": "How can I help you today?"
     },
     "suggestions": {
-      "nextjs": "What are the advantages of using Next.js?",
-      "dijkstra": "Write code to demonstrate Dijkstra's algorithm",
-      "essay": "Help me write an essay about Silicon Valley",
-      "weather": "What is the weather in San Francisco?"
+      "nextjs": "What is the status of the building permit I requested?",
+      "dijkstra": "How can I submit a request to fix the pothole in our alley?",
+      "essay": "Where can I pay my water and electricity bills?",
+      "weather": "What is the weather like in Qom?"
     }
   },
   "visibility": {
@@ -264,5 +265,53 @@
       "t3": "T3",
       "v0": "v0"
     }
+  },
+  "dashboard": {
+    "title": "Admin Dashboard",
+    "totalUsers": "Total Users",
+    "totalChats": "Total Chats",
+    "totalMessages": "Total Messages",
+    "growthUsers": "+10% from last month",
+    "growthChats": "+18% from last month",
+    "growthMessages": "+12% from last month",
+    "platformStats": "Platform Statistics",
+    "users": "Users",
+    "chats": "Chats",
+    "messages": "Messages",
+    "systemInfo": "System Information",
+    "environment": "Environment",
+    "mode": "Mode",
+    "database": "Database",
+    "authentication": "Authentication",
+    "applicationInfo": "Application Info",
+    "version": "Version",
+    "framework": "Framework",
+    "uiLibrary": "UI Library",
+    "recentActivity": "Recent Activity",
+    "newUserRegistered": "New user registered",
+    "newChatCreated": "New chat created",
+    "systemUpdate": "System update",
+    "projectDiscussion": "Project discussion",
+    "aiModelUpdated": "AI model updated",
+    "twoHoursAgo": "2 hours ago",
+    "fiveHoursAgo": "5 hours ago",
+    "oneDayAgo": "1 day ago",
+    "userManagement": "User Management",
+    "manageUserRoles": "Manage user roles and permissions",
+    "searchUsers": "Search users...",
+    "userId": "ID: {id}...",
+    "userRole": "User",
+    "adminRole": "Admin",
+    "roleUpdatedSuccess": "Role updated to {role} for {email}",
+    "roleUpdateError": "Failed to update user role",
+    "roleUpdatedTo": "Role updated to",
+    "forUser": "for",
+    "mainUsers": "Main Users",
+    "guestUsers": "Guest Users",
+    "searchMainUsers": "Search main users...",
+    "searchGuestUsers": "Search guest users...",
+    "noMainUsersFound": "No main users found",
+    "noGuestUsersFound": "No guest users found",
+    "goToChat": "Go to Chat"
   }
 }

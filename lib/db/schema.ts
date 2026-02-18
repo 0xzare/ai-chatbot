@@ -9,12 +9,14 @@ import {
   timestamp,
   uuid,
   varchar,
+  numeric,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("User", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   email: varchar("email", { length: 64 }).notNull(),
   password: varchar("password", { length: 64 }),
+  role: varchar("role", { enum: ["user", "admin"] }).notNull().default("user"),
 });
 
 export type User = InferSelectModel<typeof user>;
@@ -56,9 +58,40 @@ export const message = pgTable("Message_v2", {
   parts: json("parts").notNull(),
   attachments: json("attachments").notNull(),
   createdAt: timestamp("createdAt").notNull(),
+  zone: text("zone"),
+  latitude: numeric("latitude"),
+  longitude: numeric("longitude"),
 });
 
 export type DBMessage = InferSelectModel<typeof message>;
+
+// Table for storing keywords
+export const keyword = pgTable("Keyword", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  keyword: text("keyword").notNull(),
+});
+
+export type Keyword = InferSelectModel<typeof keyword>;
+
+// Many-to-many relationship table between messages and keywords
+export const messageKeyword = pgTable(
+  "MessageKeyword",
+  {
+    messageId: uuid("messageId")
+      .notNull()
+      .references(() => message.id),
+    keywordId: uuid("keywordId")
+      .notNull()
+      .references(() => keyword.id),
+  },
+  (table) => {
+    return {
+      pk: primaryKey({ columns: [table.messageId, table.keywordId] }),
+    };
+  }
+);
+
+export type MessageKeyword = InferSelectModel<typeof messageKeyword>;
 
 // DEPRECATED: The following schema is deprecated and will be removed in the future.
 // Read the migration guide at https://chat-sdk.dev/docs/migration-guides/message-parts

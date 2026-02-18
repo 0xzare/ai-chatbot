@@ -3,8 +3,8 @@
 import { ChevronUp } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import type { User } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
+import { useLocale } from "next-intl";
 import { useTheme } from "next-themes";
 import {
   DropdownMenu,
@@ -18,16 +18,20 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { isAdminUserRole } from "@/lib/admin";
 import { guestRegex } from "@/lib/constants";
 import { LoaderIcon } from "./icons";
 import { toast } from "./toast";
 
-export function SidebarUserNav({ user }: { user: User }) {
+export function SidebarUserNav() {
   const router = useRouter();
   const { data, status } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
+  const locale = useLocale();
+  const isRTL = locale === "fa";
 
-  const isGuest = guestRegex.test(data?.user?.email ?? "");
+  const user = data?.user;
+  const isGuest = !user || guestRegex.test(user.email ?? "");
 
   return (
     <SidebarMenu>
@@ -48,24 +52,25 @@ export function SidebarUserNav({ user }: { user: User }) {
               </SidebarMenuButton>
             ) : (
               <SidebarMenuButton
-                className="h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                className={`h-10 bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ${isRTL ? "flex-row-reverse" : ""}`}
                 data-testid="user-nav-button"
               >
                 <Image
-                  alt={user.email ?? "User Avatar"}
+                  alt={user?.email ?? "User Avatar"}
                   className="rounded-full"
                   height={24}
-                  src={`https://avatar.vercel.sh/${user.email}`}
+                  src={`https://avatar.vercel.sh/${user?.email ?? "guest"}`}
                   width={24}
                 />
                 <span className="truncate" data-testid="user-email">
                   {isGuest ? "Guest" : user?.email}
                 </span>
-                <ChevronUp className="ml-auto" />
+                <ChevronUp className={isRTL ? "mr-auto" : "ml-auto"} />
               </SidebarMenuButton>
             )}
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            align={isRTL ? "end" : "start"}
             className="w-(--radix-popper-anchor-width)"
             data-testid="user-nav-menu"
             side="top"
@@ -80,10 +85,31 @@ export function SidebarUserNav({ user }: { user: User }) {
               {`Toggle ${resolvedTheme === "light" ? "dark" : "light"} mode`}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            {isAdminUserRole(data?.user?.role) && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <button
+                    className="w-full cursor-pointer"
+                    onClick={() => {
+                      // Get the current locale from the URL
+                      const currentPath = window.location.pathname;
+                      const localeMatch = currentPath.match(/^\/([a-z]{2})\//);
+                      const locale = localeMatch ? localeMatch[1] : "en";
+                      router.push(`/${locale}/dashboard`);
+                    }}
+                    type="button"
+                  >
+                    Admin Dashboard
+                  </button>
+                </DropdownMenuItem>
+              </>
+            )}
+            <DropdownMenuSeparator />
             <DropdownMenuItem asChild data-testid="user-nav-item-auth">
               <button
                 className="w-full cursor-pointer"
-                onClick={() => {
+                onClick={async () => {
                   if (status === "loading") {
                     toast({
                       type: "error",
@@ -97,9 +123,11 @@ export function SidebarUserNav({ user }: { user: User }) {
                   if (isGuest) {
                     router.push("/login");
                   } else {
-                    signOut({
-                      redirectTo: "/",
-                    });
+                    await signOut({ redirect: false });
+                    router.refresh();
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 100);
                   }
                 }}
                 type="button"

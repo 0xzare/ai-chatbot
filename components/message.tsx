@@ -3,7 +3,7 @@ import type { UseChatHelpers } from "@ai-sdk/react";
 import { useState } from "react";
 import type { Vote } from "@/lib/db/schema";
 import type { ChatMessage } from "@/lib/types";
-import { cn, sanitizeText } from "@/lib/utils";
+import { cn, isRTL, sanitizeText } from "@/lib/utils";
 import { useDataStream } from "./data-stream-provider";
 import { DocumentToolResult } from "./document";
 import { DocumentPreview } from "./document-preview";
@@ -17,6 +17,7 @@ import {
   ToolOutput,
 } from "./elements/tool";
 import { SparklesIcon } from "./icons";
+import { Map } from "./map";
 import { MessageActions } from "./message-actions";
 import { MessageEditor } from "./message-editor";
 import { MessageReasoning } from "./message-reasoning";
@@ -124,6 +125,8 @@ const PurePreviewMessage = ({
 
             if (type === "text") {
               if (mode === "view") {
+                const textContent = sanitizeText(part.text);
+                const rtl = isRTL(textContent);
                 return (
                   <div key={key}>
                     <MessageContent
@@ -136,11 +139,18 @@ const PurePreviewMessage = ({
                       data-testid="message-content"
                       style={
                         message.role === "user"
-                          ? { backgroundColor: "#006cff" }
-                          : undefined
+                          ? {
+                              backgroundColor: "#006cff",
+                              direction: rtl ? "rtl" : "ltr",
+                              textAlign: rtl ? "right" : "left",
+                            }
+                          : {
+                              direction: rtl ? "rtl" : "ltr",
+                              textAlign: rtl ? "right" : "left",
+                            }
                       }
                     >
-                      <Response>{sanitizeText(part.text)}</Response>
+                      <Response>{textContent}</Response>
                     </MessageContent>
                   </div>
                 );
@@ -165,6 +175,53 @@ const PurePreviewMessage = ({
                   </div>
                 );
               }
+            }
+
+            if (type === "tool-getMap") {
+              const { state, output } = part;
+              const widthClass = "w-[min(100%,600px)]";
+
+              if (
+                state === "output-available" &&
+                output &&
+                "latitude" in output &&
+                "longitude" in output
+              ) {
+                return (
+                  <div className={widthClass} key={key}>
+                    <Map
+                      mapData={
+                        output as {
+                          latitude: number;
+                          longitude: number;
+                          displayName?: string;
+                          zoom?: number;
+                          marker?: boolean;
+                          error?: string;
+                        }
+                      }
+                    />
+                  </div>
+                );
+              }
+
+              if (state === "output-denied") {
+                return (
+                  <div className={widthClass} key={key}>
+                    <div className="text-sm text-red-600 dark:text-red-400">
+                      Map display was denied.
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <Tool className={widthClass} key={key}>
+                  {state === "input-available" && (
+                    <ToolInput input={JSON.stringify(part.input, null, 2)} />
+                  )}
+                </Tool>
+              );
             }
 
             if (type === "tool-getWeather") {
