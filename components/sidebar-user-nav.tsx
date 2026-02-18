@@ -3,7 +3,6 @@
 import { ChevronUp } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import type { User } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
 import { useTheme } from "next-themes";
@@ -24,14 +23,15 @@ import { guestRegex } from "@/lib/constants";
 import { LoaderIcon } from "./icons";
 import { toast } from "./toast";
 
-export function SidebarUserNav({ user }: { user: User }) {
+export function SidebarUserNav() {
   const router = useRouter();
   const { data, status } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
   const locale = useLocale();
   const isRTL = locale === "fa";
 
-  const isGuest = guestRegex.test(data?.user?.email ?? "");
+  const user = data?.user;
+  const isGuest = !user || guestRegex.test(user.email ?? "");
 
   return (
     <SidebarMenu>
@@ -56,10 +56,10 @@ export function SidebarUserNav({ user }: { user: User }) {
                 data-testid="user-nav-button"
               >
                 <Image
-                  alt={user.email ?? "User Avatar"}
+                  alt={user?.email ?? "User Avatar"}
                   className="rounded-full"
                   height={24}
-                  src={`https://avatar.vercel.sh/${user.email}`}
+                  src={`https://avatar.vercel.sh/${user?.email ?? "guest"}`}
                   width={24}
                 />
                 <span className="truncate" data-testid="user-email">
@@ -125,7 +125,9 @@ export function SidebarUserNav({ user }: { user: User }) {
                   } else {
                     await signOut({ redirect: false });
                     router.refresh();
-                    router.push("/");
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 100);
                   }
                 }}
                 type="button"
