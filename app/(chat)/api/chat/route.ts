@@ -14,7 +14,9 @@ import { entitlementsByUserType } from "@/lib/ai/entitlements";
 import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { getLanguageModel } from "@/lib/ai/providers";
 import { createDocument } from "@/lib/ai/tools/create-document";
+import { getMap } from "@/lib/ai/tools/get-map";
 import { getWeather } from "@/lib/ai/tools/get-weather";
+import { addressToPoint } from "@/lib/ai/tools/neshan-address-to-point";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { updateDocument } from "@/lib/ai/tools/update-document";
 import { isProductionEnvironment } from "@/lib/constants";
@@ -35,8 +37,6 @@ import type { ChatMessage } from "@/lib/types";
 import { convertToUIMessages, generateUUID } from "@/lib/utils";
 import { generateTitleFromUserMessage } from "../../actions";
 import { type PostRequestBody, postRequestBodySchema } from "./schema";
-import {getMap} from "@/lib/ai/tools/get-map";
-import { addressToPoint } from "@/lib/ai/tools/neshan-address-to-point";
 
 export const maxDuration = 60;
 
@@ -135,7 +135,7 @@ export async function POST(request: Request) {
             createdAt: new Date(),
             zone: null,
             latitude: null,
-            longitude: null
+            longitude: null,
           },
         ],
       });
@@ -222,7 +222,7 @@ export async function POST(request: Request) {
                     chatId: id,
                     zone: null,
                     latitude: null,
-                    longitude: null
+                    longitude: null,
                   },
                 ],
               });
@@ -237,6 +237,9 @@ export async function POST(request: Request) {
               createdAt: new Date(),
               attachments: [],
               chatId: id,
+              zone: null,
+              latitude: null,
+              longitude: null,
             })),
           });
         }

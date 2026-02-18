@@ -17,12 +17,12 @@ import {
   ToolOutput,
 } from "./elements/tool";
 import { SparklesIcon } from "./icons";
+import { Map } from "./map";
 import { MessageActions } from "./message-actions";
 import { MessageEditor } from "./message-editor";
 import { MessageReasoning } from "./message-reasoning";
 import { PreviewAttachment } from "./preview-attachment";
 import { Weather } from "./weather";
-import { Map } from "./map";
 
 const PurePreviewMessage = ({
   addToolApprovalResponse,
@@ -139,8 +139,15 @@ const PurePreviewMessage = ({
                       data-testid="message-content"
                       style={
                         message.role === "user"
-                          ? { backgroundColor: "#006cff", direction: rtl ? "rtl" : "ltr", textAlign: rtl ? "right" : "left" }
-                          : { direction: rtl ? "rtl" : "ltr", textAlign: rtl ? "right" : "left" }
+                          ? {
+                              backgroundColor: "#006cff",
+                              direction: rtl ? "rtl" : "ltr",
+                              textAlign: rtl ? "right" : "left",
+                            }
+                          : {
+                              direction: rtl ? "rtl" : "ltr",
+                              textAlign: rtl ? "right" : "left",
+                            }
                       }
                     >
                       <Response>{textContent}</Response>
@@ -171,36 +178,51 @@ const PurePreviewMessage = ({
             }
 
             if (type === "tool-getMap") {
-              const { toolCallId, state } = part;
+              const { state, output } = part;
               const widthClass = "w-[min(100%,600px)]";
 
-              if (state === "output-available") {
+              if (
+                state === "output-available" &&
+                output &&
+                "latitude" in output &&
+                "longitude" in output
+              ) {
                 return (
-                    <div key={key} className={widthClass}>
-                      <Map mapData={part.output} />
-                    </div>
+                  <div className={widthClass} key={key}>
+                    <Map
+                      mapData={
+                        output as {
+                          latitude: number;
+                          longitude: number;
+                          displayName?: string;
+                          zoom?: number;
+                          marker?: boolean;
+                          error?: string;
+                        }
+                      }
+                    />
+                  </div>
                 );
               }
 
               if (state === "output-denied") {
                 return (
-                    <div key={key} className={widthClass}>
-                      <div className="text-sm text-red-600 dark:text-red-400">
-                        Map display was denied.
-                      </div>
+                  <div className={widthClass} key={key}>
+                    <div className="text-sm text-red-600 dark:text-red-400">
+                      Map display was denied.
                     </div>
+                  </div>
                 );
               }
 
               return (
-                  <Tool key={key} className={widthClass}>
-                    {state === "input-available" && (
-                        <ToolInput input={JSON.stringify(part.input, null, 2)} />
-                    )}
-                  </Tool>
+                <Tool className={widthClass} key={key}>
+                  {state === "input-available" && (
+                    <ToolInput input={JSON.stringify(part.input, null, 2)} />
+                  )}
+                </Tool>
               );
             }
-
 
             if (type === "tool-getWeather") {
               const { toolCallId, state } = part;
