@@ -5,8 +5,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { User } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
-import { useTheme } from "next-themes";
 import { useLocale } from "next-intl";
+import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,8 +19,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { guestRegex } from "@/lib/constants";
 import { isAdminUserRole } from "@/lib/admin";
+import { guestRegex } from "@/lib/constants";
 import { LoaderIcon } from "./icons";
 import { toast } from "./toast";
 
@@ -29,7 +29,7 @@ export function SidebarUserNav({ user }: { user: User }) {
   const { data, status } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
   const locale = useLocale();
-  const isRTL = locale === 'fa';
+  const isRTL = locale === "fa";
 
   const isGuest = guestRegex.test(data?.user?.email ?? "");
 
@@ -70,10 +70,10 @@ export function SidebarUserNav({ user }: { user: User }) {
             )}
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            align={isRTL ? "end" : "start"}
             className="w-(--radix-popper-anchor-width)"
             data-testid="user-nav-menu"
             side="top"
-            align={isRTL ? "end" : "start"}
           >
             <DropdownMenuItem
               className="cursor-pointer"
@@ -95,7 +95,7 @@ export function SidebarUserNav({ user }: { user: User }) {
                       // Get the current locale from the URL
                       const currentPath = window.location.pathname;
                       const localeMatch = currentPath.match(/^\/([a-z]{2})\//);
-                      const locale = localeMatch ? localeMatch[1] : 'en';
+                      const locale = localeMatch ? localeMatch[1] : "en";
                       router.push(`/${locale}/dashboard`);
                     }}
                     type="button"
@@ -109,7 +109,7 @@ export function SidebarUserNav({ user }: { user: User }) {
             <DropdownMenuItem asChild data-testid="user-nav-item-auth">
               <button
                 className="w-full cursor-pointer"
-                onClick={() => {
+                onClick={async () => {
                   if (status === "loading") {
                     toast({
                       type: "error",
@@ -123,9 +123,9 @@ export function SidebarUserNav({ user }: { user: User }) {
                   if (isGuest) {
                     router.push("/login");
                   } else {
-                    signOut({
-                      redirectTo: "/",
-                    });
+                    await signOut({ redirect: false });
+                    router.refresh();
+                    router.push("/");
                   }
                 }}
                 type="button"
