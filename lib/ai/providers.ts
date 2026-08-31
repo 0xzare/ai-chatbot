@@ -1,4 +1,4 @@
-import { gateway } from "@ai-sdk/gateway";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import {
   customProvider,
   extractReasoningMiddleware,
@@ -7,6 +7,11 @@ import {
 import { isTestEnvironment } from "../constants";
 
 const THINKING_SUFFIX_REGEX = /-thinking$/;
+
+// ایجاد OpenRouter provider instance
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY || "",
+});
 
 export const myProvider = isTestEnvironment
   ? (() => {
@@ -37,26 +42,28 @@ export function getLanguageModel(modelId: string) {
 
   if (isReasoningModel) {
     const gatewayModelId = modelId.replace(THINKING_SUFFIX_REGEX, "");
-
     return wrapLanguageModel({
-      model: gateway.languageModel(gatewayModelId),
+      model: openrouter.chat(gatewayModelId), // تغییر از gateway به openrouter
       middleware: extractReasoningMiddleware({ tagName: "thinking" }),
     });
   }
 
-  return gateway.languageModel(modelId);
+  // استفاده از OpenRouter به جای gateway
+  return openrouter.chat(modelId);
 }
 
 export function getTitleModel() {
   if (isTestEnvironment && myProvider) {
     return myProvider.languageModel("title-model");
   }
-  return gateway.languageModel("google/gemini-2.5-flash-lite");
+
+  return openrouter.chat("google/gemini-2.5-flash-lite");
 }
 
 export function getArtifactModel() {
   if (isTestEnvironment && myProvider) {
     return myProvider.languageModel("artifact-model");
   }
-  return gateway.languageModel("anthropic/claude-haiku-4.5");
+
+  return openrouter.chat("anthropic/claude-haiku-4.5");
 }

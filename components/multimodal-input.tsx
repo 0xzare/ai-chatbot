@@ -4,6 +4,7 @@ import type { UseChatHelpers } from "@ai-sdk/react";
 import type { UIMessage } from "ai";
 import equal from "fast-deep-equal";
 import { CheckIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   type ChangeEvent,
   type Dispatch,
@@ -16,7 +17,6 @@ import {
 } from "react";
 import { toast } from "sonner";
 import { useLocalStorage, useWindowSize } from "usehooks-ts";
-import { useTranslations } from "next-intl";
 import {
   ModelSelector,
   ModelSelectorContent,
@@ -85,8 +85,8 @@ function PureMultimodalInput({
   selectedModelId: string;
   onModelChange?: (modelId: string) => void;
 }) {
-  const t = useTranslations('input');
-  const chatT = useTranslations('chat');
+  const t = useTranslations("input");
+  const chatT = useTranslations("chat");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
 
@@ -186,32 +186,35 @@ function PureMultimodalInput({
     resetHeight,
   ]);
 
-  const uploadFile = useCallback(async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
+  const uploadFile = useCallback(
+    async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
 
-    try {
-      const response = await fetch("/api/files/upload", {
-        method: "POST",
-        body: formData,
-      });
+      try {
+        const response = await fetch("/api/files/upload", {
+          method: "POST",
+          body: formData,
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        const { url, pathname, contentType } = data;
+        if (response.ok) {
+          const data = await response.json();
+          const { url, pathname, contentType } = data;
 
-        return {
-          url,
-          name: pathname,
-          contentType,
-        };
+          return {
+            url,
+            name: pathname,
+            contentType,
+          };
+        }
+        const { error } = await response.json();
+        toast.error(error);
+      } catch (_error) {
+        toast.error(t("uploadFailed"));
       }
-      const { error } = await response.json();
-      toast.error(error);
-    } catch (_error) {
-      toast.error(t('uploadFailed'));
-    }
-  }, [t]);
+    },
+    [t]
+  );
 
   const handleFileChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
@@ -279,7 +282,7 @@ function PureMultimodalInput({
         ]);
       } catch (error) {
         console.error("Error uploading pasted images:", error);
-        toast.error(t('pasteFailed'));
+        toast.error(t("pasteFailed"));
       } finally {
         setUploadQueue([]);
       }
@@ -327,7 +330,7 @@ function PureMultimodalInput({
             return;
           }
           if (status !== "ready") {
-            toast.error(t('waitForResponse'));
+            toast.error(t("waitForResponse"));
           } else {
             submitForm();
           }
@@ -374,7 +377,7 @@ function PureMultimodalInput({
             maxHeight={200}
             minHeight={44}
             onChange={handleInput}
-            placeholder={chatT('inputPlaceholder')}
+            placeholder={chatT("inputPlaceholder")}
             ref={textareaRef}
             rows={1}
             value={input}
@@ -387,10 +390,10 @@ function PureMultimodalInput({
               selectedModelId={selectedModelId}
               status={status}
             />
-            <ModelSelectorCompact
+            {/* <ModelSelectorCompact
               onModelChange={onModelChange}
               selectedModelId={selectedModelId}
-            />
+            /> */}
           </PromptInputTools>
 
           {status === "submitted" ? (
@@ -471,7 +474,7 @@ function PureModelSelectorCompact({
   selectedModelId: string;
   onModelChange?: (modelId: string) => void;
 }) {
-  const chatT = useTranslations('chat');
+  const chatT = useTranslations("chat");
   const [open, setOpen] = useState(false);
 
   const selectedModel =
@@ -498,7 +501,7 @@ function PureModelSelectorCompact({
         </Button>
       </ModelSelectorTrigger>
       <ModelSelectorContent>
-        <ModelSelectorInput placeholder={chatT('searchModels')} />
+        <ModelSelectorInput placeholder={chatT("searchModels")} />
         <ModelSelectorList>
           {Object.entries(modelsByProvider).map(
             ([providerKey, providerModels]) => (

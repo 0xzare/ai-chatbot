@@ -15,6 +15,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+const RTL_REGEX = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFC]/;
+
+export function isRTL(text: string): boolean {
+  if (!text) return false;
+  return RTL_REGEX.test(text);
+}
+
 export const fetcher = async (url: string) => {
   const response = await fetch(url);
 

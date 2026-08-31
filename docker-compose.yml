@@ -1,19 +1,59 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chatbot-app
+    restart: unless-stopped
+    ports:
+      - "82:3000"
+    environment:
+      - NEXTAUTH_URL=https://chat.gmind.ir
+      - DATABASE_URL=postgresql://demo:demo@db:5432/chatbot
+      - POSTGRES_URL=postgresql://demo:demo@db:5432/chatbot
+      - REDIS_URL=redis://redis:6379
+    env_file:
+      - .env.local
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - chatbot-network
+
   db:
-    image: docker.arvancloud.ir/postgres:latest
+    image: postgres:16-alpine
     container_name: chatbot-db
     restart: unless-stopped
-    env_file: .env.local
+    environment:
+      - POSTGRES_USER=demo
+      - POSTGRES_PASSWORD=demo
+      - POSTGRES_DB=chatbot
     ports:
-      - 5434:5432
+      - "5434:5432"
     volumes:
-      - ./db-data/:/var/lib/postgresql
+      - ./db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo -d chatbot"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chatbot-network
+
   redis:
-    image: docker.arvancloud.ir/redis
+    image: redis:7-alpine
     container_name: chatbot-redis
-    command: redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - "6379:6379"
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+#    ports:
+#      - "6379:6379"
     volumes:
       - ./redis-data:/data
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - chatbot-network
+
+networks:
+  chatbot-network:
+    driver: bridge

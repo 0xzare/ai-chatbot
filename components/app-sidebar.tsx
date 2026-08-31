@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { User } from "next-auth";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
-import { useTranslations, useLocale } from "next-intl";
 import { PlusIcon, TrashIcon } from "@/components/icons";
 import {
   getChatHistoryPaginationKey,
@@ -40,10 +40,10 @@ export function AppSidebar({ user }: { user: User | undefined }) {
   const { setOpenMobile } = useSidebar();
   const { mutate } = useSWRConfig();
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
-  const t = useTranslations('chat.sidebar');
-  const deleteT = useTranslations('sidebarHistory.deleteAll');
+  const t = useTranslations("chat.sidebar");
+  const deleteT = useTranslations("sidebarHistory.deleteAll");
   const locale = useLocale();
-  const isRTL = locale === 'fa';
+  const isRTL = locale === "fa";
 
   const handleDeleteAll = () => {
     const deletePromise = fetch("/api/history", {
@@ -51,36 +51,47 @@ export function AppSidebar({ user }: { user: User | undefined }) {
     });
 
     toast.promise(deletePromise, {
-      loading: deleteT('loading'),
+      loading: deleteT("loading"),
       success: () => {
         mutate(unstable_serialize(getChatHistoryPaginationKey));
         setShowDeleteAllDialog(false);
         router.replace("/");
         router.refresh();
-        return deleteT('success');
+        return deleteT("success");
       },
-      error: deleteT('error'),
+      error: deleteT("error"),
     });
   };
 
   return (
     <>
-      <Sidebar side={isRTL ? "right" : "left"} className={isRTL ? "group-data-[side=right]:border-l-0" : "group-data-[side=left]:border-r-0"}>
+      <Sidebar
+        className={
+          isRTL
+            ? "group-data-[side=right]:border-l-0"
+            : "group-data-[side=left]:border-r-0"
+        }
+        side={isRTL ? "right" : "left"}
+      >
         <SidebarHeader>
           <SidebarMenu>
-            <div className="flex flex-row items-center justify-between">
+            <div
+              className={`flex flex-row items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+            >
               <Link
-                className="flex flex-row items-center gap-3"
+                className={`flex flex-row items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
                 href="/"
                 onClick={() => {
                   setOpenMobile(false);
                 }}
               >
                 <span className="cursor-pointer rounded-md px-2 font-semibold text-lg hover:bg-muted">
-                  {t('title')}
+                  {t("title")}
                 </span>
               </Link>
-              <div className="flex flex-row gap-1">
+              <div
+                className={`flex flex-row gap-1 ${isRTL ? "flex-row-reverse" : ""}`}
+              >
                 {user && (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -94,7 +105,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent align="end" className="hidden md:block">
-                      {t('deleteAll')}
+                      {t("deleteAll")}
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -114,7 +125,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent align="end" className="hidden md:block">
-                    {t('newChat')}
+                    {t("newChat")}
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -124,7 +135,9 @@ export function AppSidebar({ user }: { user: User | undefined }) {
         <SidebarContent>
           <SidebarHistory user={user} />
         </SidebarContent>
-        <SidebarFooter>{user && <SidebarUserNav user={user} />}</SidebarFooter>
+        <SidebarFooter>
+          <SidebarUserNav />
+        </SidebarFooter>
       </Sidebar>
 
       <AlertDialog
@@ -133,15 +146,15 @@ export function AppSidebar({ user }: { user: User | undefined }) {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{deleteT('title')}</AlertDialogTitle>
+            <AlertDialogTitle>{deleteT("title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {deleteT('description')}
+              {deleteT("description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{deleteT('cancel')}</AlertDialogCancel>
+            <AlertDialogCancel>{deleteT("cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteAll}>
-              {deleteT('delete')}
+              {deleteT("delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

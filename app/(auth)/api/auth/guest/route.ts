@@ -17,5 +17,11 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  return signIn("guest", { redirect: true, redirectTo: redirectUrl });
+  try {
+    await signIn("guest", { redirect: false });
+    return NextResponse.redirect(new URL(redirectUrl, request.url));
+  } catch (error) {
+    console.error("Guest sign in error:", error);
+    return NextResponse.redirect(new URL("/login?error=guest", request.url));
+  }
 }

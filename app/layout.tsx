@@ -1,7 +1,7 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Suspense } from "react";
+import { vazirmatn } from "@/lib/fonts";
 
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
@@ -9,18 +9,6 @@ import { SessionProvider } from "next-auth/react";
 export const viewport = {
   maximumScale: 1, // Disable auto-zoom on mobile Safari
 };
-
-const geist = Geist({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-geist",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-geist-mono",
-});
 
 const LIGHT_THEME_COLOR = "hsl(0 0% 100%)";
 const DARK_THEME_COLOR = "hsl(240deg 10% 3.92%)";
@@ -49,7 +37,8 @@ export default async function RootLayout({
 }>) {
   return (
     <html
-      className={`${geist.variable} ${geistMono.variable}`}
+      className={`${vazirmatn.variable}`}
+      lang="fa"
       suppressHydrationWarning
     >
       <head>
@@ -60,7 +49,10 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased font-sans">
+      <body
+        className="antialiased font-sans"
+        style={{ fontFamily: vazirmatn.style.fontFamily }}
+      >
         <Suspense fallback={<div className="flex h-dvh" />}>
           <ThemeProvider
             attribute="class"
